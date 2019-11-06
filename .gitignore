@@ -3,3 +3,11 @@ __pycache__
 
 # Editors
 .vscode
+
+# Package build files
+/build/*
+/dist/*
+/sweeps.egg-info/*
+
+# macOS .DS_Store file
+**/.DS_Store
