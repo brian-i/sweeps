@@ -80,8 +80,13 @@ def check_status(rf, script, sim):
 def collect_rf_status(script, sim):
     status_table = {e : set() for e in Status}
     for rf in os.listdir(path.join(sim,'rfs')):
-        status = check_status(rf, script, sim)
-        status_table[status].add(rf)
+        if os.path.isdir(path.join(sim,'rfs',rf)):   # Check that path is a directory
+            status = check_status(rf, script, sim)
+            status_table[status].add(rf)
+        else:
+            if rf[0] != '.':    # Check if file is a hidden system file
+                print('!! File', rf, 'in rfs directory is not a run folder. ' 
+                    'It has been skipped.')
     return status_table
 
 def query_status(script, sim):
