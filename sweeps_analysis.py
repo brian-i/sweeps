@@ -104,7 +104,6 @@ def get_data(ID:str, sim_loc: str):
             import h5py
             with h5py.File(filepath, 'r') as f:
                 keys = f.keys()
-                print("Keys: %s" % keys)    # List all groups
                 return(
                     f if len(keys) > 1
                     else np.transpose(np.array(f.get(list(keys)[0])))
