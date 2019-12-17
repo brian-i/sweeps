@@ -40,10 +40,10 @@ def run_sweep(project, prog, script, num_procs, sweep=None, rerun_failed=False):
         for rf in sorted(rf_status[Status.RUNNING]):
             write(file, "### " + rf)
     # Prompt for approval
-    if rf_status[Status.INVALID]:
-        print("Warning: Found rfs with status INVALID (ignored)")
-    if rf_status[Status.RUNNING] or rf_status[Status.QUEUED]:
-        print("Warning: Found rfs with status QUEUED or RUNNING (ignored)")
+    #if rf_status[Status.INVALID]:
+        #print("Warning: Found rfs with status INVALID (ignored)")
+    #if rf_status[Status.RUNNING] or rf_status[Status.QUEUED]:
+        #print("Warning: Found rfs with status QUEUED or RUNNING (ignored)")
     approval = 'y'
     if not approval == 'y':
         return print("Aborting sweep.")
