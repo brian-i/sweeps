@@ -46,7 +46,7 @@ def read_sweep(sweep_file):
             const_vars[var] = sweep_value
         elif sweep_type == "manual":
             sweep_vars.append(var)
-            sweep_values.append(numpy.array(sweep_value))
+            sweep_values.append(numpy.array(sweep_value).tolist())
         elif sweep_type == "linspace":
             sweep_vars.append(var)
             sweep_values.append(numpy.linspace(*sweep_value))
