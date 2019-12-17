@@ -44,8 +44,7 @@ def run_sweep(project, prog, script, num_procs, sweep=None, rerun_failed=False):
         print("Warning: Found rfs with status INVALID (ignored)")
     if rf_status[Status.RUNNING] or rf_status[Status.QUEUED]:
         print("Warning: Found rfs with status QUEUED or RUNNING (ignored)")
-    approval = input("Run file written to " + run + " "
-         + "("+str(len(queued_rfs)) + " rfs queued to run).\nProceed (y/N)? ")
+    approval = 'y'
     if not approval == 'y':
         return print("Aborting sweep.")
     # Define signal handlers
@@ -79,7 +78,7 @@ def run_sweep(project, prog, script, num_procs, sweep=None, rerun_failed=False):
     pool.imap_unordered(run_rf, args, chunksize=1)
     pool.close()
     # Wait for sweep to finish or quit
-    print("Sweep started. Press CTRL+C to interrupt.")
+    #print("Sweep started. Press CTRL+C to interrupt.")
     pool.join()
     print("Sweep completed.")
 
