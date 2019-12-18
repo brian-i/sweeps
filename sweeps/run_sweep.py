@@ -11,11 +11,13 @@ def run_sweep(project, prog, script, num_procs, sweep=None, rerun_failed=False):
     timestamp = get_timestamp()
     # Determine status of all requested rfs
     rf_status = collect_rf_status(script, project)
+
     if sweep is not None:
         sweep_file = path.join(project,sweep)
         rfs = [rf for rf,_ in read_sweep(sweep_file)]
         for status in Status:
             rf_status[status].intersection_update(rfs)
+            
     queued_rfs = set(rf_status[Status.NEW])
     if rerun_failed:
         queued_rfs.update(rf_status[Status.FAILED])
@@ -39,11 +41,12 @@ def run_sweep(project, prog, script, num_procs, sweep=None, rerun_failed=False):
             write(file, "### " + rf)
         for rf in sorted(rf_status[Status.RUNNING]):
             write(file, "### " + rf)
-    # Prompt for approval
+
     if rf_status[Status.INVALID]:
         print("Warning: Found rfs with status INVALID (ignored)")
     if rf_status[Status.RUNNING] or rf_status[Status.QUEUED]:
         print("Warning: Found rfs with status QUEUED or RUNNING (ignored)")
+
     # Define signal handlers
     def handle_signal(rc, *args):
         if rc == signal.SIGINT:
@@ -57,25 +60,30 @@ def run_sweep(project, prog, script, num_procs, sweep=None, rerun_failed=False):
             with open(path.join(project,'rfs',rf,'status.txt'), 'a') as status:
                 write(status, generate_status("  KILLED",script_id))
         raise SystemExit(rc)
+
     signal.signal(signal.SIGQUIT, handle_signal)
     signal.signal(signal.SIGTERM, handle_signal)
     signal.signal(signal.SIGINT, handle_signal)
+
     # Copy to history
     os.rename(run_file, path.join(project,'history',run))
     if sweep is not None:
         os.rename(sweep_file, path.join(project,'history',sweep))
     shutil.copyfile(path.join(project,'bin',script),\
         path.join(project,'history',timestamp+'.script'))
+
     for rf in queued_rfs:
         with open(path.join(project,'rfs',rf,'status.txt'), 'a') as status:
             write(status, generate_status("  QUEUED",script_id))
+
     # Start the sweep
     pool = multiprocessing.Pool(processes=num_procs)
     args = [(project, prog, script, rf) for rf in queued_rfs]
     pool.imap_unordered(run_rf, args, chunksize=1)
     pool.close()
+
     # Wait for sweep to finish or quit
-    #print("Sweep started. Press CTRL+C to interrupt.")
+    print("Sweep started. Press CTRL+C to interrupt.")
     pool.join()
     print("Sweep completed.")
 
