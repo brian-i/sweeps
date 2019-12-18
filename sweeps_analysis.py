@@ -8,6 +8,7 @@ Created: November 2019
 import pandas as pd
 import numpy as np
 import os
+import pickle
 import json
 import warnings
 
@@ -29,7 +30,7 @@ def remove_non_rfs(sim_loc,directory_list):
                     'It has been removed from directory_list.')
 
 def get_DataFrame(
-        sim_loc: str, ID_hashes=None, 
+        sim_loc: str, ID_hashes=None,
         col_headers=None) -> pd.core.frame.DataFrame:
     """Extract and return a pandas DataFrame from a directory of run folders.
 
@@ -58,7 +59,7 @@ def get_DataFrame(
             params[i] = json.load(prm_fl)   # Get JSON dict from parameter file
 
     return (
-        pd.DataFrame(params, index=IDs) if col_headers == None 
+        pd.DataFrame(params, index=IDs) if col_headers == None
         else pd.DataFrame(params, index=IDs, columns=col_headers))
 
 def get_data(ID:str, sim_loc: str):
@@ -98,9 +99,12 @@ def get_data(ID:str, sim_loc: str):
         elif filename[-4:] == '.npz':
             # Numpy npz file
             return np.load(filepath)
+        elif filename[-5:] == '.pklz':
+            # pickle file
+            return pickle.load(filepath)
         elif filename[-4:] == '.jld' or filename[-5:] == '.jld2':
             # Julia JLD or JLD2 file, which uses HDF5 encoding
-            # Return an appropriate numpy matrix if 
+            # Return an appropriate numpy matrix if
             import h5py
             with h5py.File(filepath, 'r') as f:
                 keys = f.keys()
