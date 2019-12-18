@@ -1,6 +1,5 @@
 import os, os.path as path, shutil
 import hashlib, json
-import numpy
 import itertools
 
 from .sweep_utils import get_timestamp
@@ -8,6 +7,10 @@ from .sweep_utils import get_timestamp
 def create_rfs(sim, sweep):
     sweep_file = path.join(sim,sweep)
     for rf, params in read_sweep(sweep_file):
+        # handle first time usage
+        if not path.exists(path.join(sim,'rfs')):
+            os.mkdir(path.join(sim,'rfs'))
+
         rf_path = path.join(sim,'rfs',rf)
         if not path.exists(rf_path):
             os.mkdir(rf_path)
@@ -39,8 +42,8 @@ def read_sweep(sweep_file):
 
     iterable_value = dict()
     iterable_value['constant'] = lambda value : [value]
-    iterable_value['manual'] = lambda value : numpy.array(value)
-    iterable_value['linspace'] = lambda value : numpy.linspace(*value)
+    iterable_value['manual'] = lambda value : value
+    iterable_value['linspace'] = lambda value : numpy.linspace(*value).tolist()
 
     parameter_keys = list(sweep.keys())
     parameter_values = [iterable_value[item['sweep_type']](item['value'])  \
