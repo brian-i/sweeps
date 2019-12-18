@@ -36,25 +36,18 @@ def delete_rfs(sim, sweep):
 def read_sweep(sweep_file):
     with open(sweep_file) as file:
         sweep = json.load(file)
-    const_vars = dict()
-    sweep_vars = []
-    sweep_values = []
-    for var in sweep:
-        sweep_type = sweep[var]["sweep_type"]
-        sweep_value = sweep[var]["value"]
-        if sweep_type == "constant":
-            const_vars[var] = sweep_value
-        elif sweep_type == "manual":
-            sweep_vars.append(var)
-            sweep_values.append(numpy.array(sweep_value,dtype=np.float64))
-        elif sweep_type == "linspace":
-            sweep_vars.append(var)
-            sweep_values.append(numpy.linspace(*sweep_value,dtype=np.float64))
-        else:
-            print("Warning: sweep variable " + var + " ignored.")
-    for values in itertools.product(*sweep_values):
-        params = dict(zip(sweep_vars,values))
-        params.update(const_vars)
-        params = json.dumps(params, indent=4, sort_keys=True)
+
+    iterable_value = dict()
+    iterable_value['constant'] = lambda value : [value]
+    iterable_value['manual'] = lambda value : numpy.array(value)
+    iterable_value['linspace'] = lambda value : numpy.linspace(*value)
+
+    parameter_keys = list(sweep.keys())
+    parameter_values = [iterable_value[item['sweep_type']](item['value'])  \
+                                for item in sweep.values()]
+
+    for values in itertools.product(*parameter_values):
+        params = dict(zip(parameter_keys,values))
+        params = json.dumps(params,indent=4,sort_keys=True)
         rf = hashlib.md5(params.encode('utf-8')).hexdigest()[:16]
         yield (rf, params)
