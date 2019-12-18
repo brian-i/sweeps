@@ -41,13 +41,17 @@ def read_sweep(sweep_file):
         sweep = json.load(file)
 
     iterable_value = dict()
-    iterable_value['constant'] = lambda value : [value]
-    iterable_value['manual'] = lambda value : value
-    iterable_value['linspace'] = lambda value : numpy.linspace(*value).tolist()
+    iterable_value['constant'] = lambda value : [value] if str(value).isnumeric()  \
+                                                        else None
+    iterable_value['manual'] = lambda value : value if isinstance(value,list) \
+                                                    else None
+    iterable_value['linspace'] = lambda value : numpy.linspace(*value).tolist() \
+                                            if len(value) == 3 else None
 
     parameter_keys = list(sweep.keys())
     parameter_values = [iterable_value[item['sweep_type']](item['value'])  \
                                 for item in sweep.values()]
+    if None in parameter_values: raise ValueError("Check sweep types.")
 
     for values in itertools.product(*parameter_values):
         params = dict(zip(parameter_keys,values))
