@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 import os
 import pickle
+import gzip
 import json
 import warnings
 
@@ -101,7 +102,8 @@ def get_data(ID:str, sim_loc: str):
             return np.load(filepath)
         elif filename[-5:] == '.pklz':
             # pickle file
-            return pickle.load(filepath)
+            with gzip.open(filepath) as f:
+                return pickle.load(f)
         elif filename[-4:] == '.jld' or filename[-5:] == '.jld2':
             # Julia JLD or JLD2 file, which uses HDF5 encoding
             # Return an appropriate numpy matrix if
