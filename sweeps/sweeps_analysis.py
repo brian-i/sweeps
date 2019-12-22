@@ -8,8 +8,6 @@ Created: November 2019
 import pandas as pd
 import numpy as np
 import os
-import pickle
-import gzip
 import json
 import warnings
 
@@ -59,9 +57,10 @@ def get_DataFrame(
         with open(os.path.join(sim_loc,'rfs',IDs[i],'params.json')) as prm_fl:
             params[i] = json.load(prm_fl)   # Get JSON dict from parameter file
 
-    return (
-        pd.DataFrame(params, index=IDs) if col_headers == None
-        else pd.DataFrame(params, index=IDs, columns=col_headers))
+    df = pd.DataFrame(params, index=IDs) if col_headers == None \
+        else pd.DataFrame(params, index=IDs, columns=col_headers)
+    return df
+
 
 def get_data(ID:str, sim_loc: str):
     """Return data extracted from a saved file in a particular run folder.
@@ -102,6 +101,8 @@ def get_data(ID:str, sim_loc: str):
             return np.load(filepath)
         elif filename[-5:] == '.pklz':
             # pickle file
+            import pickle
+            import gzip
             with gzip.open(filepath) as f:
                 return pickle.load(f)
         elif filename[-4:] == '.jld' or filename[-5:] == '.jld2':
