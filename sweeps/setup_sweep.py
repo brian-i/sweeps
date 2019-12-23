@@ -42,7 +42,7 @@ def read_sweep(sweep_file):
         sweep = json.load(file)
 
     iterable_value = dict()
-    iterable_value['constant'] = lambda value : [value] if isinstance(value,numbers.Real())  \
+    iterable_value['constant'] = lambda value : [value] if isinstance(value,numbers.Real)  \
                                                         else None
     iterable_value['manual'] = lambda value : value if isinstance(value,list) \
                                                     else None
