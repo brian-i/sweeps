@@ -51,7 +51,10 @@ def read_sweep(sweep_file):
     parameter_keys = list(sweep.keys())
     parameter_values = [iterable_value[item['sweep_type']](item['value'])  \
                                 for item in sweep.values()]
-    if None in parameter_values: raise ValueError("Check sweep types and values.")
+    #if None in parameter_values: raise ValueError("Check sweep types and values.")
+    for index, value in enumerate(parameter_values)
+        if value is None:
+            raise ValueError("Parameter " + str(parameter_keys[index]) + " invalid")
 
     for values in itertools.product(*parameter_values):
         params = dict(zip(parameter_keys,values))
