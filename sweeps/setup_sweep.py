@@ -52,7 +52,7 @@ def read_sweep(sweep_file):
     parameter_values = [iterable_value[item['sweep_type']](item['value'])  \
                                 for item in sweep.values()]
     #if None in parameter_values: raise ValueError("Check sweep types and values.")
-    for index, value in enumerate(parameter_values)
+    for index, value in enumerate(parameter_values):
         if value is None:
             raise ValueError("Parameter " + str(parameter_keys[index]) + " invalid")
 
