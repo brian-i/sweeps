@@ -3,6 +3,7 @@ Run parameter sweeps easily, in parallel, with JSON parameters, logs, diverse la
 
 ## Installation
 *Python **3.7** or above is required for running sweeps. Versions 3.6 and below will encounter error.*
+
 To install: Download sweeps package, navigate to its directory (`cd sweeps`) and execute the following:
 ```bash
 sudo python setup.py install
@@ -19,6 +20,8 @@ This guide assumes you are working in the top-level of your parameter sweeps dir
 5. Run the script using `sweeps run` (below)
 
 ### To create rfs:
+Run folders (rfs) represent individual runs of a script file for a particular parameter. The folder name is a hash depending on the parameter value and script file.
+
 ```bash
 sweeps . create sweep_config.json
 ```
@@ -26,13 +29,15 @@ sweeps . create sweep_config.json
 ### To run script:
 **Requirement:** A script file, such as `script.py`, must be located inside a `bin` folder on your top-level directory. (See example directory tree below:)
 ```bash
-sweeps . run python script.py
+sweeps . run python script_file.py
 ```
 
 ### To query:
+Querying shows the status of your run, including the number of rfs completed, queued, running, and failed.
+
 **Requirement:** A script file, such as `script.py`, must be located inside a `bin` folder on your top-level directory. (This is already satisfied if `sweeps run` was used.)
 ```bash
-sweeps . query script.py
+sweeps . query script_file.py
 ```
 
 # Example Directory Structure Tree
