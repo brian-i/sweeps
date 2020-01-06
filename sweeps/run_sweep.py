@@ -2,12 +2,15 @@ import argparse
 import os, os.path as path, shutil
 import signal
 import subprocess, multiprocessing
+import sys
 
 from .sweep_utils import get_timestamp, asheader, write, get_script_id
 from .sweep_utils import Status, collect_rf_status, generate_status
 from .setup_sweep import read_sweep
 
-def run_sweep(project, prog, script, num_procs, sweep=None, rerun_failed=False):
+def run_sweep(
+        project, prog, script, num_procs, sweep=None, rerun_failed=False,
+        skip_approval=False):
     timestamp = get_timestamp()
     # Determine status of all requested rfs
     rf_status = collect_rf_status(script, project)
@@ -46,6 +49,14 @@ def run_sweep(project, prog, script, num_procs, sweep=None, rerun_failed=False):
         print("Warning: Found rfs with status INVALID (ignored)")
     if rf_status[Status.RUNNING] or rf_status[Status.QUEUED]:
         print("Warning: Found rfs with status QUEUED or RUNNING (ignored)")
+
+    if not skip_approval:
+        if not query_yes_no("Run file written to " + run + " " +
+            "("+str(len(queued_rfs)) + " rfs queued to run).\nProceed (y/N)?"):
+            return print("Aborting sweep.")
+    else:
+        print("Run file written to " + run + " " +
+            "("+str(len(queued_rfs)) + " rfs queued to run).")
 
     # Define signal handlers
     def handle_signal(rc, *args):
@@ -121,3 +132,35 @@ def run_rf(args):
         write(log, asheader("LOG FILE CLOSED "+get_timestamp()))
         log.close()
         status.close()
+
+def query_yes_no(question, default="yes"):
+    """Ask a yes/no question via raw_input() and return their answer.
+
+    "question" is a string that is presented to the user.
+    "default" is the presumed answer if the user just hits <Enter>.
+        It must be "yes" (the default), "no" or None (meaning
+        an answer is required of the user).
+
+    The "answer" return value is True for "yes" or False for "no".
+    """
+    valid = {"yes": True, "y": True, "ye": True,
+             "no": False, "n": False}
+    if default is None:
+        prompt = " [y/n] "
+    elif default == "yes":
+        prompt = " [Y/n] "
+    elif default == "no":
+        prompt = " [y/N] "
+    else:
+        raise ValueError("invalid default answer: '%s'" % default)
+
+    while True:
+        sys.stdout.write(question + prompt)
+        choice = input().lower()
+        if default is not None and choice == '':
+            return valid[default]
+        elif choice in valid:
+            return valid[choice]
+        else:
+            sys.stdout.write("Please respond with 'yes' or 'no' "
+                             "(or 'y' or 'n').\n")

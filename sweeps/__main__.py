@@ -32,6 +32,8 @@ def main():
         "location relative to PROJECT")
     run.add_argument('--rerun_failed', action='store_true',\
         help="rerun failed rfs")
+    run.add_argument('-y', '--yes', action='store_true',\
+        help='proceed with running sweeps without confirmation')
     query = subcommands.add_parser('query',\
         description="Print sweep summary for a given script")
     query.add_argument('script', metavar="SCRIPT",\
@@ -44,7 +46,7 @@ def main():
         delete_rfs(args.project, args.sweep_file)
     elif args.subcommand == 'run':
         run_sweep(args.project, args.program, args.script, args.procs,\
-            args.sweep_file, args.rerun_failed)
+            args.sweep_file, args.rerun_failed, args.yes)
     elif args.subcommand == 'query':
         query_status(args.script, args.project)
 
