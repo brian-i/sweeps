@@ -72,3 +72,39 @@ sweeps . query script_file.py
 │       └── status.txt
 └── sweep_config.json
 ```
+
+# Extracting Run Data (Analysis)
+A couple of built-in Python tools exist to extract completed run data in an `rfs` folder and create a Pandas DataFrame.
+
+## Extracting pandas DataFrame using get_DataFrame()
+In Python, at the top-level directory such as the one in the example structure tree,
+```python
+>>> import sweeps
+>>> import os
+>>> cwd = os.getcwd()
+>>> run_DataFrame = sweeps.get_DataFrame(cwd)
+
+# Result: run_DataFrame = 
+                      value
+9ac81a2c5029aa08        2.0
+7bfacd4db6a44d40        3.0
+d73ece6dc1a2f5e8        0.0
+6e733249c3ae5dd1        1.0
+0e37e95b8301883e        4.0
+```
+
+## Reading saved files in run folders
+In Python at the top-level directory, to read in a data file saved by your script for a particular run, 
+```python
+>>> result = sweeps.get_data('9ac81a2c5029aa08', cwd)
+```
+
+The follwing data formats have support added for `sweeps.get_data()`:
+* HDF5 (.hdf5)
+* Matlab (.mat)
+* JSON (.json) *Note: Ensure that saved data file is not naed params.json*
+* Binary JSON (.bson)
+* Numpy array (.npz)
+* Python Pickele file (.pklz)
+* Julia, using HDF5 encoding (.jld or .jld2) (returns Numpy array if it is the only object stored in file, otherwise returns HDF5 keys)
+If no recognized file type is found, any existing data file is returned without any attempt at processing it.
