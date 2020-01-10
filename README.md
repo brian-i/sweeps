@@ -15,6 +15,7 @@ After installation, `sweeps` may now be invoked from the command line anywhere o
 This guide assumes you are working in the top-level of your parameter sweeps directory. For an example, see the directory tree below.
 1. Initialize this directory by creating `bin` and `rfs` directories.
 2. Add a JSON file to the top-level containing parameter sweep information.
+⋅⋅* An example parameter sweep file, such as `sweep_config.json`, may be seen [in the test folder](https://github.com/brian-i/sweeps/blob/master/test/sweep.json).
 3. Add a script file to the `bin` folder.
 4. Create run folders (rfs) using `sweeps create` (below)
 5. Run the script using `sweeps run` (below)
@@ -107,4 +108,5 @@ The follwing data formats have support added for `sweeps.get_data()`:
 * Numpy array (.npz)
 * Python Pickele file (.pklz)
 * Julia, using HDF5 encoding (.jld or .jld2) (returns Numpy array if it is the only object stored in file, otherwise returns HDF5 keys)
+
 If no recognized file type is found, any existing data file is returned without any attempt at processing it.
