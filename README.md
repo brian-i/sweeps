@@ -100,10 +100,10 @@ In Python at the top-level directory, to read in a data file saved by your scrip
 >>> result = sweeps.get_data('9ac81a2c5029aa08', cwd)
 ```
 
-The follwing data formats have support added for `sweeps.get_data()`:
+The following data formats have support for `sweeps.get_data()`:
 * HDF5 (.hdf5)
 * Matlab (.mat)
-* JSON (.json) *Note: Ensure that saved data file is not naed params.json*
+* JSON (.json) *Note: Ensure that saved data file is not named params.json*
 * Binary JSON (.bson)
 * Numpy array (.npz)
 * Python Pickele file (.pklz)
