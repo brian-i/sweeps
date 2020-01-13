@@ -2,6 +2,7 @@ import os, os.path as path, shutil
 import numbers
 import hashlib, json
 import itertools
+import numpy
 
 from .sweep_utils import get_timestamp
 
