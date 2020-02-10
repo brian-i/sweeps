@@ -86,7 +86,7 @@ def get_data(ID: str, sim_loc: str):
             import h5py
             with h5py.File(filepath, 'r') as f:
                 print("Keys: %s" % f.keys())    # List all groups
-                return f
+                return f.filename
         elif filename[-4:] == '.mat':
             # Matlab matrix file
             import scipy.io
@@ -115,7 +115,7 @@ def get_data(ID: str, sim_loc: str):
             with h5py.File(filepath, 'r') as f:
                 keys = f.keys()
                 return(
-                    f if len(keys) > 1
+                    f.filename if len(keys) > 1
                     else np.transpose(np.array(f.get(list(keys)[0])))
                     # Note: Julia stores data in column major order, as opposed
                     # to row major used by numpy, so to read matrices this way
